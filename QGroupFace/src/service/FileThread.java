@@ -18,7 +18,7 @@ public class FileThread implements Runnable {
 	private AtomicInteger femaleIndex = new AtomicInteger(1);
 	
 	private HttpRequests httpRequests = new HttpRequests(
-			Main.API_KEY, Main.API_SECRET, true, true);
+			Config.API_KEY, Config.API_SECRET, true, true);
 	
 	private static String getGenderOrNull(JSONObject result) {
 		String gender;
@@ -42,14 +42,15 @@ public class FileThread implements Runnable {
 				if (cnt <= list.size() - 1) {
 					file = list.get(cnt);cnt++;
 				}
-			}	//unlock 
+			}	//解锁
 			
 			JSONObject result = null;
 			try {
 				result = httpRequests.detectionDetect(new PostParameters()
 				.setImg(file).setAttribute("gender"));
 			} catch (FaceppParseException e) {
-				e.printStackTrace();
+				System.out.println("Error:\t" + file.getName() + " => " + e.getErrorMessage());
+				continue;
 			}
 
 			String gender = getGenderOrNull(result);
@@ -62,17 +63,21 @@ public class FileThread implements Runnable {
 					index = maleIndex.getAndIncrement();
 				}
 				
-				//some file are ends with null : ZJ0P65PZN$CW6IU)2PJVMDQ.null
+				//有些图片是.null后缀如 : ZJ0P65PZN$CW6IU)2PJVMDQ.null
 				String destSuffix = FileUtils.getFileSuffix(file);
 				if(destSuffix.equals("null")){
 					destSuffix = "jpg";
 				}
-				FileUtils.fileChannelCopy(file, new File(Main.destPath
+				FileUtils.fileChannelCopy(file, new File(Config.destPath
 						+ "\\" + gender + "\\" + index + "." + destSuffix));
-				
+
 				System.out.println(Thread.currentThread().getName() + "\t"
 				+ file.getName() + " -> "
 				+ gender + "\\" + index + "." + destSuffix );
+				
+				if(Config.delSrcFile){	//删源文件
+					file.delete();
+				}
 			}
 			
 		}

@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 public class FileUtils {
-	private static final long FILE_SIZE_MIN = 10240;// 10kb
+	private static final long FILE_SIZE_MIN = 12288;// 12kb
 	private static final long FILE_SIZE_MAX = 1048576; // 1M
 
 	/**
-	 * fliter files that are obviously illegal
+	 * 初步过滤不含皂片的文件
 	 * @param file
 	 * @return
 	 */
@@ -27,7 +27,7 @@ public class FileUtils {
 	}
 
 	/**
-	 * create directory that needed
+	 * 如果目标目录不存在就新建，包括其性别分类子目录
 	 * @param destPath
 	 */
 	public static void initDestFileDir(String destPath) {
@@ -50,7 +50,7 @@ public class FileUtils {
 	}
 
 	/**
-	 * copy file
+	 * 复制文件
 	 * @param src
 	 * @param dest
 	 */

@@ -6,28 +6,27 @@ import java.util.List;
 
 public class Main {
 	
-	public static String srcPath = "";
-	public static String destPath = ""; // absolute path better, no any other file better
-
-    public static String API_KEY = "4480afa9b8b364e30ba03819f3e9eff5";
-    public static String API_SECRET = "Pz9VFT8AP3g_Pz8_dz84cRY_bz8_Pz8M";
-
-	private static final int threadNumber = 20;
-	
 	public static void main(String[] args) {
-		if(args.length==2){
-			srcPath = args[0];destPath = args[1];
+		if(args.length == 2){
+			Config.initConfig(args[0],args[1],false,Config.threadNum);
+		}else if(args.length == 3){
+			Config.initConfig(args[0],args[1],args[2].toUpperCase().equals("Y"),Config.threadNum);
+		}else if(args.length == 4){
+			Config.initConfig(args[0],args[1],args[2].toUpperCase().equals("Y"),Integer.parseInt(args[3]));
 		}
-		FileUtils.initDestFileDir(destPath);
+		FileUtils.initDestFileDir(Config.destPath);
 
 		try {
-			List<File> list = getFliteredFileList(srcPath);
-			System.out.println("After fliter "+list.size()+" files leave");
+			List<File> list = getFliteredFileList(Config.srcPath);
+			System.out.println("After fliter files number: "+list.size());
+			System.out.println("Thread number: " + Config.threadNum );
+			System.out.println("Delete sources picture: " + Config.delSrcFile);
+			System.out.println();
 			
 			FileThread fileThread = new FileThread();
 			fileThread.setList(list);
 			
-			Thread[] threads = new Thread[threadNumber];
+			Thread[] threads = new Thread[Config.threadNum];
 			for (int i = 0; i < threads.length; i++) {
 				threads[i] = new Thread(fileThread,"Thread-"+ (int)(i+1));
 				threads[i].start();
