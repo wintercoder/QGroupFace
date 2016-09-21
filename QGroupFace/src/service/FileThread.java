@@ -44,6 +44,7 @@ public class FileThread implements Runnable {
 				}
 			}	//解锁
 			
+			//过滤
 			JSONObject result = null;
 			try {
 				result = httpRequests.detectionDetect(new PostParameters()
@@ -52,7 +53,13 @@ public class FileThread implements Runnable {
 				System.out.println("Error:\t" + file.getName() + " => " + e.getErrorMessage());
 				continue;
 			}
-
+			//检查是不是很多白色像素来去表情包
+			if(file.length() < Config.whiteRGBFileSizeMax){
+				if(FileUtils.isImageWhite(file,Config.whiteRGBMin,Config.whiteRGBRate)){
+					continue;
+				}
+			}
+			
 			String gender = getGenderOrNull(result);
 			if (null == gender) {
 			}else{
