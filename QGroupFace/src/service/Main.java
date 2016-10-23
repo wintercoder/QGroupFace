@@ -28,13 +28,13 @@ public class Main {
 			
 			Thread[] threads = new Thread[Config.threadNum];
 			for (int i = 0; i < threads.length; i++) {
-				threads[i] = new Thread(fileThread,"Thread-"+ (int)(i+1));
+				threads[i] = new Thread(fileThread,""+i);
 				threads[i].start();
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 

@@ -4,7 +4,7 @@ public class Config {
 	public static String srcPath = "";
 	public static String destPath = ""; // 绝对路径
 	public static boolean delSrcFile = false;	//是否删除源图片
-	public static int threadNum = 5;	//太多会在网络上处理不过来
+	public static int threadNum = 10;	//太多会在网络上处理不过来
 	
 	public static int whiteRGBFileSizeMax = 50*1024;	//50K 大于这个文件大小的就不检测白颜色了，提高速度
 	public static int whiteRGBMin = 240;

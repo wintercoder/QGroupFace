@@ -1,3 +1,4 @@
+::不是必须 因为程序里也有做过滤
 @echo off
 
 set delPath=E:\Software\QQ_data\10000\Image\Group\Image1

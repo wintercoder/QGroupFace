@@ -13,30 +13,26 @@ Windows版QQ在收到Q群图片后会将图片存在 `数据目录\Q号\Image\Gr
 3. < 50KB 且 含大量白色像素的表情包，默认白色像素超过50%为表情包
 
 ## 用法
-不改动代码的情况下
+打开[release下的work.bat](release/work.bat)修改其中的图片路径，保存后双击运行。
 
-	java -jar QGroupFace.jar 源图片目录 输出目录 [复制后是否删源文件（Y/N）] [线程数（默认5）]
+参数：
 
-如：查找并复制
+	java -jar QGroupFace.jar 源图片目录 输出目录 [复制后是否删源文件（Y/N）] [线程数（默认10）]
 
-	java -jar QGroupFace.jar E:\Software\QQ_data\10000\Image\Group\Image1 E:\Image1
+如：
 
-复制后删除源文件且设置线程数为6（建议小于10） 
+	java -jar QGroupFace.jar E:\Software\QQ_data\10001\Image\Group\Image7 E:\test
 
-	java -jar QGroupFace.jar 源图片目录 输出目录 Y 6
+如需将输出重定向到当前目录文本里则加上 `>> log.txt` 。
 
-如需将输出重定向到当前目录文本里则加上 `>> log.txt` 即可。
-
-
-然后慢慢等待，10-20分钟不等，五个线程情况下1200个文件大概需要10分钟。
+然后慢慢等待，最好去吃个饭，10个线程情况下100个文件大概1分钟，10个线程比较合适，线程过多会出现Face++的异常。
 
 ## 注意事项
-1. 使用前建议***先用QQ自带的消息删除器删除很久前的图片***，可以的话也用[批处理文件（记得改路径）](release/doFliter.bat)过滤删除一些不太可能是皂片的文件。 
+1. 使用前建议先用QQ自带的消息删除器删除很久前的图片，可以的话也用[批处理文件（记得改路径）](release/doFliter.bat)过滤删除一些不太可能是皂片的文件。 
 2. 调用API需要 `API Key` 和 `API Secret`，代码里已使用官方的测试Key，貌似是上线版（不限制并发数），而自己注册的账号默认是并发数限制为3。
 3. 线程数设置太高可能导致face++反馈异常。
 4. QQ有些图片是 `.null` 为后缀，实际上是图片，默认当作 `jpg` 处理。
 5. QQ有些动图也被保存为 jpg 格式。
-6. 由于face++的返回的json项太多就不格式化为对象了，直接正则判断是否成功。
 
 ## License
 **The MIT License**

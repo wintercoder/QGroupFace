@@ -13,7 +13,6 @@ import com.facepp.http.PostParameters;
 
 public class FileThread implements Runnable {
 	private List<File> list;
-	private volatile int cnt = 0;
 	private AtomicInteger maleIndex = new AtomicInteger(1);
 	private AtomicInteger femaleIndex = new AtomicInteger(1);
 	
@@ -33,16 +32,17 @@ public class FileThread implements Runnable {
 		return gender;
 	}
 	
-
+	/**
+	 * 无锁并发：对需要处理的文件id取模分段，不同线程处理不同的文件
+	 * 如m个文件n个线程则 1号线程处理 1,1+n,1+2n...1+kn 号文件(1+kn<m)
+	 */
 	@Override
 	public void run() {
-		File file = null;
-		while (cnt <= list.size() - 1) {
-			synchronized (this) {
-				if (cnt <= list.size() - 1) {
-					file = list.get(cnt);cnt++;
-				}
-			}	//解锁
+		int threadId = Integer.parseInt(Thread.currentThread().getName());
+		int fileId = threadId;
+		while(fileId < list.size()){
+			File file = list.get(fileId);
+			fileId += Config.threadNum;
 			
 			//过滤
 			JSONObject result = null;
@@ -50,7 +50,7 @@ public class FileThread implements Runnable {
 				result = httpRequests.detectionDetect(new PostParameters()
 				.setImg(file).setAttribute("gender"));
 			} catch (FaceppParseException e) {
-				System.out.println("Error:\t" + file.getName() + " => " + e.getErrorMessage());
+				System.out.println("Error:\tThread-" + threadId + "\tFile-"+fileId + "\t" + file.getName() + " => " + e.getErrorMessage());
 				continue;
 			}
 			//检查是不是很多白色像素来去表情包
@@ -78,20 +78,14 @@ public class FileThread implements Runnable {
 				FileUtils.fileChannelCopy(file, new File(Config.destPath
 						+ "\\" + gender + "\\" + index + "." + destSuffix));
 
-				System.out.println(Thread.currentThread().getName() + "\t"
-				+ file.getName() + " -> "
-				+ gender + "\\" + index + "." + destSuffix );
-				
 				if(Config.delSrcFile){	//删源文件
 					file.delete();
 				}
 			}
-			
 		}
 	}
 	
 	public void setList(List<File> list) {
 		this.list = list;
-		cnt = 0;
 	}
 }
